@@ -8,7 +8,7 @@ namespace ServiceProvider.Services
         AuthnRequest GetSamlRequest();
     }
 
-    public class SamlService
+    public class SamlService: ISamlService
     {
         public SamlService()
         {
