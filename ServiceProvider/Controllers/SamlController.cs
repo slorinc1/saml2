@@ -25,7 +25,7 @@ namespace ServiceProvider.Controllers
 
             var result = this.authnRequestXMLSerializer.Serialize(request);
 
-            return Ok(result);
+            return RedirectToAction("GetResponse", new { id = request.ID });
         }
 
         [Route("request64")]
@@ -41,7 +41,7 @@ namespace ServiceProvider.Controllers
         }
 
         [Route("response")]
-        public IActionResult GetResponse()
+        public IActionResult GetResponse(string id)
         {
             var attributeStatement = new AttributeStatement()
             {
@@ -71,8 +71,8 @@ namespace ServiceProvider.Controllers
             var response = new UnsignedSAMLResponse()
             {
                 Destination = "dest",
-                ID = "id",
-                InResponseTo = "asdasd",
+                ID = Guid.NewGuid().ToString(),
+                InResponseTo = id,
                 IssueInstant = DateTime.Now,
                 Version = SAMLContants.Version,
                 Status = new Status()
@@ -111,7 +111,7 @@ namespace ServiceProvider.Controllers
                             Method = "method",
                             SubjectConfirmationData = new SubjectConfirmationData()
                             {
-                                InResponseTo = "asdasd",
+                                InResponseTo = id,
                                 NotOnOrAfter = DateTime.Now,
                                 Recipient = "recipient"
                             }

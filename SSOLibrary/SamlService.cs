@@ -21,12 +21,12 @@ namespace SSOLibrary
             {
                 Version = SAMLContants.Version,
                 ProtocolBinding = SAMLContants.ProtocolBinding,
-                Destination = "dest",
-                ID = "sadfadfsadfsdf",
-                AssertionConsumerServiceURL = "consumerurl.com/?consuume",
+                Destination = "http://idp.example.com/SSOService.php",
+                ID = $"{Guid.NewGuid().ToString().Replace("-","")}{DateTime.Now.Ticks}",
+                AssertionConsumerServiceURL = "http://sp.example.com/demo1/index.php?acs",
                 IssueInstant = DateTime.Now,
-                Issuer = "issuer",
-                ProviderName = "provider name",
+                Issuer = "Service Provider",
+                ProviderName = "Service provider",
                 NameIDPolicy = new NameIDPolicy()
                 {
                     AllowCreate = true,
