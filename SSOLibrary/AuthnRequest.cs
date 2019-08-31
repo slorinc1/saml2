@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace ServiceProvider.Models.SAML
+namespace SSOLibrary
 {
     [XmlRoot("AuthnRequest", Namespace = SAMLContants.SAMLP_NAMESPACE)]
     public class AuthnRequest

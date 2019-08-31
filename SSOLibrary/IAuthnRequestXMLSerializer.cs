@@ -1,10 +1,14 @@
-﻿using ServiceProvider.Models.SAML;
-using System.IO;
+﻿using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace ServiceProvider.Services
+namespace SSOLibrary
 {
+    public interface IAuthnRequestXMLSerializer
+    {
+        string Serialize(AuthnRequest authnRequest);
+    }
+
     public class AuthnRequestXMLSerializer : IAuthnRequestXMLSerializer
     {
         public string Serialize(AuthnRequest authnRequest)

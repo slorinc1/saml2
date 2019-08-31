@@ -1,14 +1,15 @@
-﻿using ServiceProvider.Models.SAML;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace ServiceProvider.Services
+namespace SSOLibrary
 {
     public interface ISamlService
     {
         AuthnRequest GetSamlRequest();
     }
 
-    public class SamlService: ISamlService
+    public class SamlService : ISamlService
     {
         public SamlService()
         {

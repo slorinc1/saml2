@@ -1,4 +1,8 @@
-﻿namespace ServiceProvider.Models.SAML
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SSOLibrary
 {
     public class SAMLContants
     {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ServiceProvider.Services;
+using SSOLibrary;
 using System;
 using System.Text;
 
@@ -13,7 +13,6 @@ namespace ServiceProvider.Controllers
         private readonly ISamlService samlService;
 
         public SamlController(IAuthnRequestXMLSerializer authnRequestXMLSerializer, ISamlService samlService)
-
         {
             this.authnRequestXMLSerializer = authnRequestXMLSerializer;
             this.samlService = samlService;
