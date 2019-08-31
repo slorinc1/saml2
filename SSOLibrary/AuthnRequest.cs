@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace SSOLibrary
@@ -6,6 +7,10 @@ namespace SSOLibrary
     [XmlRoot("AuthnRequest", Namespace = SAMLContants.SAMLP_NAMESPACE)]
     public class AuthnRequest
     {
+        [DefaultValue("AuthnRequest")]
+        [XmlAttribute()]
+        public string id { get; set; } = "AuthnRequest";
+
         [XmlElement]
         public Signature Signature { get; set; }
 

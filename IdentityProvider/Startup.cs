@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SSOLibrary;
 
 namespace IdentityProvider
 {
@@ -30,7 +31,9 @@ namespace IdentityProvider
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            
+            services.AddTransient<ISamlService, SamlService>();
+            services.AddTransient<IAuthnRequestXMLSerializer, AuthnRequestXMLSerializer>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -58,6 +61,10 @@ namespace IdentityProvider
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "default2",
+                    template: "{controller}/{action}/{id?}");
             });
         }
     }
