@@ -10,6 +10,8 @@ namespace SSOLibrary
         string Serialize(AuthnRequest authnRequest);
 
         string Serialize(UnsignedSAMLResponse samlResponse);
+
+        string Serialize(Type type, object value);
     }
 
     public class AuthnRequestXMLSerializer : IAuthnRequestXMLSerializer
@@ -40,7 +42,7 @@ namespace SSOLibrary
         {
             return Serialize(samlResponse.GetType(), samlResponse);
         }
-        
+
         public string Serialize(AuthnRequest authnRequest)
         {
             return Serialize(authnRequest.GetType(), authnRequest);

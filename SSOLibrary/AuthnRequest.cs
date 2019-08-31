@@ -6,6 +6,9 @@ namespace SSOLibrary
     [XmlRoot("AuthnRequest", Namespace = SAMLContants.SAMLP_NAMESPACE)]
     public class AuthnRequest
     {
+        [XmlElement]
+        public Signature Signature { get; set; }
+
         [XmlAttribute]
         public string ID { get; set; }
 
