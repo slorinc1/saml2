@@ -33,7 +33,7 @@ namespace ServiceProvider
             });
             
             services.AddTransient<ISamlService, SamlService>();
-            services.AddTransient<IAuthnRequestXMLSerializer, AuthnRequestXMLSerializer>();
+            services.AddTransient<ISamlXMLSerializer, SamlXMLSerializer>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

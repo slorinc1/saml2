@@ -5,16 +5,18 @@ using System.Xml.Serialization;
 
 namespace SSOLibrary
 {
-    public interface IAuthnRequestXMLSerializer
+    public interface ISamlXMLSerializer
     {
         string Serialize(AuthnRequest authnRequest);
 
         string Serialize(UnsignedSAMLResponse samlResponse);
 
         string Serialize(Type type, object value);
+
+        T Deserialize<T>(string xml);
     }
 
-    public class AuthnRequestXMLSerializer : IAuthnRequestXMLSerializer
+    public class SamlXMLSerializer : ISamlXMLSerializer
     {
         public string Serialize(Type type, object value)
         {
@@ -46,6 +48,18 @@ namespace SSOLibrary
         public string Serialize(AuthnRequest authnRequest)
         {
             return Serialize(authnRequest.GetType(), authnRequest);
+        }
+
+        public T Deserialize<T>(string xml)
+        {
+            T response = default(T);
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (StringReader reader = new StringReader(xml))
+            {
+                response = (T)serializer.Deserialize(reader);
+            }
+
+            return response;
         }
     }
 }

@@ -1,17 +1,18 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace SSOLibrary
 {
-    [XmlRoot("AuthnRequest", Namespace = SAMLContants.SAMLP_NAMESPACE)]
-    public class AuthnRequest
+    public interface ISignable
     {
-        [DefaultValue("AuthnRequest")]
-        [XmlAttribute()]
-        public string id { get; set; } = "AuthnRequest";
+        [XmlElement(Namespace = "http://www.w3.org/2000/09/xmldsig#")]
+        Signature Signature { get; set; }
+    }
 
-        [XmlElement]
+    [XmlRoot("AuthnRequest", Namespace = SAMLContants.SAMLP_NAMESPACE)]
+    public class AuthnRequest: ISignable
+    {
+        [XmlElement(Namespace = "http://www.w3.org/2000/09/xmldsig#")]
         public Signature Signature { get; set; }
 
         [XmlAttribute]
