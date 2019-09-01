@@ -4,8 +4,11 @@ using System.Xml.Serialization;
 namespace SSOLibrary
 {
     [XmlRoot("Response", Namespace = SAMLContants.SAMLP_NAMESPACE)]
-    public class UnsignedSAMLResponse
+    public class UnsignedSAMLResponse : ISignable
     {
+        [XmlElement(Namespace = "http://www.w3.org/2000/09/xmldsig#")]
+        public Signature Signature { get; set; }
+        
         [XmlAttribute]
         public string ID { get; set; }
 

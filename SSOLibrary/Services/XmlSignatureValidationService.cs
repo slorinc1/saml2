@@ -2,7 +2,7 @@
 using System.Security.Cryptography.Xml;
 using System.Xml;
 
-namespace IdentityProvider.Services
+namespace SSOLibrary.Services
 {
     public class XmlSignatureValidationService : IXmlSignatureValidationService
     {

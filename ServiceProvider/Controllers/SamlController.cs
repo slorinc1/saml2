@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ServiceProvider.Services;
 using SSOLibrary;
+using SSOLibrary.Services;
 using System;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace ServiceProvider.Controllers
@@ -15,11 +18,14 @@ namespace ServiceProvider.Controllers
 
         private readonly ICertificateService certificateService;
 
+        private readonly IXmlSignatureValidationService xmlSignatureValidationService;
+
         public SamlController(ISamlXMLSerializer authnRequestXMLSerializer, ISamlService samlService)
         {
             this.authnRequestXMLSerializer = authnRequestXMLSerializer;
             this.samlService = samlService;
             this.certificateService = new CertificateService();
+            xmlSignatureValidationService = new XmlSignatureValidationService();
         }
 
         [Route("request")]
@@ -40,6 +46,33 @@ namespace ServiceProvider.Controllers
             }
 
             return Ok(signedRequest);
+        }
+
+        [Route("assertion")]
+        [HttpPost]
+        public IActionResult VerifyAssertion([FromBody]string assertion)
+        {
+            var signedAssertionBytes = Convert.FromBase64String(assertion);
+            var signedAssertion = Encoding.UTF8.GetString(signedAssertionBytes);
+            FileStream fs = new FileStream(@"C:\assert.xml", FileMode.Create);
+            var bytes = Encoding.UTF8.GetBytes(signedAssertion);
+            fs.Write(bytes, 0, bytes.Length);
+            fs.Close();
+
+            var response = this.authnRequestXMLSerializer.Deserialize<UnsignedSAMLResponse>(signedAssertion);
+
+            var cert = this.certificateService.GetCertificate("CN=IdentityCert");
+
+            var isValid = this.xmlSignatureValidationService.Validate(signedAssertion, cert);
+
+            if (isValid)
+            {
+                var email = response.Assertion.AttributeStatement.Where(x => x.Name == "email").FirstOrDefault().AttributeValue;
+
+                Ok(email);
+            }
+
+            return Ok("Could not validate");
         }
     }
 }

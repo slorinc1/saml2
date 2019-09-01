@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 
-namespace ServiceProvider.Services
+namespace SSOLibrary.Services
 {
     public interface ISignatureService
     {

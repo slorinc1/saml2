@@ -1,11 +1,11 @@
-﻿using SSOLibrary;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography.Xml;
+using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
-namespace ServiceProvider.Services
+namespace SSOLibrary.Services
 {
     public class SignatureService : ISignatureService
     {
