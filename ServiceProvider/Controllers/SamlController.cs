@@ -4,6 +4,7 @@ using SSOLibrary;
 using SSOLibrary.Services;
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -28,8 +29,28 @@ namespace ServiceProvider.Controllers
             xmlSignatureValidationService = new XmlSignatureValidationService();
         }
 
+        public static string CompressString(string text)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
+            var memoryStream = new MemoryStream();
+            using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+            {
+                gZipStream.Write(buffer, 0, buffer.Length);
+            }
+
+            memoryStream.Position = 0;
+
+            var compressedData = new byte[memoryStream.Length];
+            memoryStream.Read(compressedData, 0, compressedData.Length);
+
+            var gZipBuffer = new byte[compressedData.Length + 4];
+            Buffer.BlockCopy(compressedData, 0, gZipBuffer, 4, compressedData.Length);
+            Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gZipBuffer, 0, 4);
+            return Convert.ToBase64String(gZipBuffer);
+        }
+
         [Route("request")]
-        public IActionResult GetRequest(bool base64)
+        public IActionResult GetRequest()
         {
             var request = this.samlService.GetSamlRequest();
             var result = this.authnRequestXMLSerializer.Serialize(request);
@@ -38,14 +59,8 @@ namespace ServiceProvider.Controllers
             var signatureService = new SignatureService(this.authnRequestXMLSerializer, request);
             var signedRequest = signatureService.GetSignedXml(result, cert);
 
-            if (base64)
-            {
-                var base64String = Convert.ToBase64String(Encoding.UTF8.GetBytes(signedRequest));
-
-                return Ok(base64String);
-            }
-
-            return Ok(signedRequest);
+            var compressed = CompressString(signedRequest);
+            return Redirect($"https://localhost:44320/saml/response?base64=true&samlRequest={compressed}");
         }
 
         [Route("assertion")]

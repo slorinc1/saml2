@@ -12,6 +12,8 @@ using System.Security.Cryptography.Xml;
 using SSOLibrary;
 using IdentityProvider.Services;
 using SSOLibrary.Services;
+using System.IO;
+using System.IO.Compression;
 
 namespace IdentityProvider.Controllers
 {
@@ -34,12 +36,31 @@ namespace IdentityProvider.Controllers
             this.samlXMLSerializer = new SamlXMLSerializer();
         }
 
-        [Route("response")]
-        [HttpPost]
-        public IActionResult GetResponse([FromBody]string samlrequest, bool base64)
+        public static string DecompressString(string compressedText)
         {
-            var signedSamlBytes = Convert.FromBase64String(samlrequest);
-            var signedSaml = Encoding.UTF8.GetString(signedSamlBytes);
+            byte[] gZipBuffer = Convert.FromBase64String(compressedText);
+            using (var memoryStream = new MemoryStream())
+            {
+                int dataLength = BitConverter.ToInt32(gZipBuffer, 0);
+                memoryStream.Write(gZipBuffer, 4, gZipBuffer.Length - 4);
+
+                var buffer = new byte[dataLength];
+
+                memoryStream.Position = 0;
+                using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+                {
+                    gZipStream.Read(buffer, 0, buffer.Length);
+                }
+
+                return Encoding.UTF8.GetString(buffer);
+            }
+        }
+
+        [Route("response")]
+        [HttpGet]
+        public IActionResult GetResponse(string samlrequest, bool base64)
+        {
+            var signedSaml = DecompressString(samlrequest);
 
             var cert = this.certificateService.GetCertificate("CN=IdentityCert");
             var isValid = xmlSignatureValidation.Validate(signedSaml, cert);
